@@ -4,7 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pre-start": "concurrently --restart-after 1000 --restart-tries 10 \"npm run watch\"",
+    "start": "npm run pre-start -- \"npm run web\"",
+    "start:chromium": "npm run pre-start -- \"npm run web:chromium\"",
+    "start:chromium:windows": "npm run pre-start -- \"npm run web:chromium:windows\"",
+    "build": "webpack --config webpack.config.js",
+    "build:prod": "npm run build -- --mode=production",
+    "watch": "npm run build -- --watch",
+    "web": "web-ext run --source-dir=dist --devtools --keep-profile-changes --profile-create-if-missing",
+    "web:firefox": "npm run web -- -t firefox-desktop --firefox-profile=profile/firefox",
+    "web:chromium": "npm run web -- -t chromium --chromium-profile=profile/chromium",
+    "web:chromium:windows": "SET var=%cd%&& npm run web -- -t chromium --no-reload --chromium-profile=\"%var%\\profile\\chromium\"",
+    "lint": "eslint --ext .ts,.tsx src",
+    "lint:fix": "eslint --ext .ts,.tsx src --fix"
   },
   "repository": {
     "type": "git",
@@ -18,11 +30,14 @@
   "homepage": "https://github.com/Defkil/webpack-browser-extension-boilerplate#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "concurrently": "^8.0.1",
     "eslint": "^8.38.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "web-ext": "^7.6.0",
+    "webpack": "^5.78.0"
   }
 }
